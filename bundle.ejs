@@ -1,0 +1,20 @@
+(function (modules) {
+  function require(id) {
+    const [fn,mapping] = modules[id];
+    const module = {
+      exports: {},
+    };
+    function localRequire(name) {
+      return require(mapping[name]);
+    }
+    fn(localRequire, module, module.exports);
+    return module.exports;
+  }
+  require(0); // 启动入口
+})({
+<% data.forEach(info=>{ %>
+  <%- info["id"] %>: [function (require, module, exports) {
+    <%- info["code"] %>;
+  },<%- JSON.stringify(info["mapping"]) %>],
+<% }) %>
+});
